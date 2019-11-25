@@ -30,6 +30,7 @@ export default {
   data() {
     return {
       active: false,
+      disabled: false,
     };
   },
   props: {
@@ -58,10 +59,14 @@ export default {
         window.location.href.endsWith(this.item.meta.target + '/')
       );
     },
+    isDisabled() {
+      return this.item.disabled;
+    }
   },
   computed: {
     showLabel() {
       return (
+        this.disabled ||
         this.item.path === undefined &&
         this.item.element === undefined &&
         this.item.external === undefined
@@ -74,31 +79,36 @@ export default {
       return this.showLink && this.$router === undefined;
     },
     showExternalHyperLink() {
-      return this.item.external !== undefined;
+      return this.item.external !== undefined && !this.disabled;
     },
     showLink() {
-      return this.item.path !== undefined || this.item.element !== undefined;
+      return (this.item.path !== undefined || this.item.element !== undefined) && !this.disabled;
     },
     classes() {
       return {
         'NavigationItem--active': this.active,
+        'NavigationItem--disabled': this.disabled,
       };
     },
   },
   watch: {
     item() {
       this.active = this.isActive();
+      this.disabled = this.isDisabled();
     },
     $route() {
       this.active = this.isActive();
+      this.disabled = this.isDisabled();
     },
   },
   mounted() {
     this.active = this.isActive();
+    this.disabled = this.isDisabled();
 
     if (!this.$router) {
       window.addEventListener('hashchange', () => {
         this.active = this.isActive();
+        this.disabled = this.isDisabled();
       });
     }
   },

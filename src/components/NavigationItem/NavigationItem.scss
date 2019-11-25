@@ -3,6 +3,10 @@
   padding-top:    5px;
   padding-bottom: 5px;
 
+  &.NavigationItem--disabled span {
+    cursor: default;
+  }
+
   span {
     cursor: pointer;
   }
